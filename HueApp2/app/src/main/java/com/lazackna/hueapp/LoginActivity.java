@@ -1,6 +1,7 @@
 package com.lazackna.hueapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Set;
+
 public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = LoginActivity.class.getName();
@@ -41,10 +44,26 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nameText.getText() == null || nameText.getText().equals("")) return;
+                String ip = ipText.getText().toString();
+                String name = nameText.getText().toString();
+                String port = portText.getText().toString();
+                if (!infoValid(name,port,ip)) return;
+
+
                 login();
             }
         });
+        SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE);
+        String name = (sharedPreferences.getString(Settings.SELECTEDUSER, ""));
+        String ip = (sharedPreferences.getString(Settings.SELECTEDIP, ""));
+        String key = sharedPreferences.getString(Settings.SELECTEDBRIDGE, "");
+
+        if (infoValid(name,portText.getText().toString(), ip) && key != null && !key.equals("")) {
+            nameText.setText(name);
+            ipText.setText(ip);
+
+            openMainActivity(key);
+        }
 
 
     }
@@ -83,6 +102,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void openMainActivity(String key) {
         //Log.d(TAG, Light.hueToHex(0.346, 0.3568, 254));
+        SharedPreferences.Editor editor = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE).edit();
+        editor.putString(Settings.SELECTEDBRIDGE, key);
+        editor.putString(Settings.SELECTEDUSER, nameText.getText().toString());
+        editor.putString(Settings.SELECTEDIP, ipText.getText().toString());
+        editor.apply();
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("login_key", key);
         intent.putExtra("login_ip", ipText.getText().toString());
@@ -108,6 +132,10 @@ public class LoginActivity extends AppCompatActivity {
             exception.printStackTrace();
         }
         return body;
+    }
+
+    private boolean infoValid(String name, String port, String ip) {
+        return name != null && !name.equals("") && port != null && !port.equals("") && ip != null && !ip.equals("");
     }
 
 
