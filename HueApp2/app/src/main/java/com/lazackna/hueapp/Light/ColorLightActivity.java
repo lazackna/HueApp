@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.lazackna.hueapp.ColorHelper;
 import com.lazackna.hueapp.CustomJsonArrayRequest;
 import com.lazackna.hueapp.R;
 
@@ -28,6 +29,8 @@ public class ColorLightActivity extends AppCompatActivity {
     protected SeekBar saturation;
     protected SeekBar brightness;
     protected Button sendButton;
+
+    private View colorView;
 
     private RequestQueue requestQueue;
     private ColorLight light;
@@ -44,6 +47,7 @@ public class ColorLightActivity extends AppCompatActivity {
         hue = (SeekBar) findViewById(R.id.hue);
         saturation = (SeekBar) findViewById(R.id.saturation);
         brightness = (SeekBar) findViewById(R.id.color_brightness);
+        colorView = findViewById(R.id.color_color);
         sendButton = (Button) findViewById(R.id.colorSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -61,6 +65,7 @@ public class ColorLightActivity extends AppCompatActivity {
         hue.setProgress(light.hue);
         saturation.setProgress(light.sat);
         brightness.setProgress(light.bri);
+        colorView.setBackgroundColor(ColorHelper.xyToColor(light.xy[0], light.xy[1], light.bri));
     }
 
     private void sendToHueBridge() {

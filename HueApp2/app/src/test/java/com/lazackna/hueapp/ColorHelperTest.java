@@ -9,9 +9,11 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class ColorHelperTest {
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void xyToRGB_Correct() {
+        int[] rgb = ColorHelper.xyToRGB(0.5015, 0.3530, 254);
+        int[] expected = new int[] {255,160,122};
+        assertArrayEquals(rgb, expected);
     }
 }

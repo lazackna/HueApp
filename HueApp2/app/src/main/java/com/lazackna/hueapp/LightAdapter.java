@@ -52,10 +52,10 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.LightViewHol
         holder.name.setText(light.name);
         if (light instanceof ColorLight) {
             light = (ColorLight) light;
-
-            float[] hsv = new float[]{((ColorLight) light).hue, ((ColorLight) light).sat, ((ColorLight) light).bri};
+            int color = ColorHelper.xyToColor(((ColorLight) light).xy[0], ((ColorLight) light).xy[1], ((ColorLight) light).bri);
+            //float[] hsv = new float[]{((ColorLight) light).hue, ((ColorLight) light).sat, ((ColorLight) light).bri};
             //int color = Color.HSVToColor(hsv);
-            //holder.lightColorView.setBackgroundColor(color);
+            holder.lightColorView.setBackgroundColor(color);
 
         }
         //int color = R.color.purple_200;
@@ -83,6 +83,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.LightViewHol
             //this.textView = itemView.findViewById(R.id.captionTextView);
             //this.imageView = (ImageView) itemView.findViewById(R.id.photoImageView);
             name = itemView.findViewById(R.id.light_name);
+            lightColorView = itemView.findViewById(R.id.lightColor);
             this.adapter = adapter;
 
             // Make this object a listener for clicks on our item view
