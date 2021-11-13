@@ -15,7 +15,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.lazackna.hueapp.Light.ColorLight;
+import com.lazackna.hueapp.Light.ColorLightActivity;
 import com.lazackna.hueapp.Light.DimmableLight;
+import com.lazackna.hueapp.Light.DimmableLightActivity;
 import com.lazackna.hueapp.Light.Light;
 
 import org.json.JSONArray;
@@ -133,6 +135,17 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
     @Override
     public void onItemClick(int clickedPosition) {
         Log.d(TAG, "clicked item");
+        Light light = lightList.get(clickedPosition);
+        Intent intent = null;
+        if (light instanceof ColorLight) {
+            intent = new Intent(this, ColorLightActivity.class);
+            intent.putExtra("light", (ColorLight)light);
+        } else if (light instanceof DimmableLight) {
+            intent = new Intent(this, DimmableLightActivity.class);
+            intent.putExtra("light", (DimmableLight)light);
+        }
+        if (intent != null)
+        startActivity(intent);
     }
 //    private void sendToHueBridge() {
 //        // Note that the HUE API expects a JSONObject but returns a JSONArray,

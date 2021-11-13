@@ -1,6 +1,8 @@
 package com.lazackna.hueapp.Light;
 
-public abstract class Light {
+import java.io.Serializable;
+
+public abstract class Light implements Serializable {
     public String id;
     public String name;
     public PowerState powerState;
