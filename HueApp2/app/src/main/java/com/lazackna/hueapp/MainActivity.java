@@ -7,11 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,9 +14,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.lazackna.hueapp.Light.ColorLight;
+import com.lazackna.hueapp.Light.DimmableLight;
+import com.lazackna.hueapp.Light.Light;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -73,16 +70,37 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                         try {
                             for(int i = 1; i < response.length(); i++) {
                                 JSONObject root = response.getJSONObject(i + "");
+                                String type = root.getString("type");
+                                Light light = null;
                                 JSONObject j = root.getJSONObject("state");
-                                JSONArray array = j.getJSONArray("xy");
-                                Light light = new Light(
-                                        i,
-                                        j.getInt("bri"),
-                                        j.getInt("hue"),
-                                        j.getInt("sat"),
-                                        new double[] {array.getDouble(0), array.getDouble(1)},
-                                        root.getString("name")
-                                );
+                                Light.PowerState powerState = Light.PowerState.OFF;
+                                String id = root.getString("uniqueid");
+                                String name = root.getString("name");
+                                switch(type) {
+                                    case "Extended color light":
+                                        //JSONObject j = root.getJSONObject("state");
+                                        JSONArray array = j.getJSONArray("xy");
+
+                                        if (j.getBoolean("on")) powerState = Light.PowerState.ON;
+                                        light = new ColorLight(
+                                                id,
+                                                name,
+                                                powerState,
+                                                j.getInt("bri"),
+                                                j.getInt("hue"),
+                                                j.getInt("sat"),
+                                                new double[] { array.getDouble(0), array.getDouble(1) });
+                                        break;
+                                    case "Dimmable light":
+                                        light = new DimmableLight(
+                                                id,
+                                                name,
+                                                j.getInt("bri"),
+                                                powerState);
+                                        break;
+                                }
+
+                                if (light == null) return;
                                 lightList.add(light);
                             }
 
@@ -114,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
     @Override
     public void onItemClick(int clickedPosition) {
-
+        Log.d(TAG, "clicked item");
     }
 //    private void sendToHueBridge() {
 //        // Note that the HUE API expects a JSONObject but returns a JSONArray,
