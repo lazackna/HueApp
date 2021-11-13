@@ -70,13 +70,14 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                     public void onResponse(JSONObject response) {
                         //Log.d(LOGTAG, "Volley response: " + response.toString());
                         try {
-                            for(int i = 1; i < response.length(); i++) {
+                            for(int i = 1; i <= response.length(); i++) {
                                 JSONObject root = response.getJSONObject(i + "");
                                 String type = root.getString("type");
                                 Light light = null;
                                 JSONObject j = root.getJSONObject("state");
                                 Light.PowerState powerState = Light.PowerState.OFF;
-                                String id = root.getString("uniqueid");
+                                String uniqueid = root.getString("uniqueid");
+
                                 String name = root.getString("name");
                                 switch(type) {
                                     case "Extended color light":
@@ -85,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
                                         if (j.getBoolean("on")) powerState = Light.PowerState.ON;
                                         light = new ColorLight(
-                                                id,
+                                                i,
+                                                uniqueid,
                                                 name,
                                                 powerState,
                                                 j.getInt("bri"),
@@ -95,7 +97,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                         break;
                                     case "Dimmable light":
                                         light = new DimmableLight(
-                                                id,
+                                                i,
+                                                uniqueid,
                                                 name,
                                                 j.getInt("bri"),
                                                 powerState);
@@ -144,8 +147,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
             intent = new Intent(this, DimmableLightActivity.class);
             intent.putExtra("light", (DimmableLight)light);
         }
-        if (intent != null)
-        startActivity(intent);
+        if (intent != null) {
+            intent.putExtra("login_key", key);
+            intent.putExtra("login_ip", ip);
+            intent.putExtra("login_port", port);
+            startActivity(intent);
+        }
     }
 //    private void sendToHueBridge() {
 //        // Note that the HUE API expects a JSONObject but returns a JSONArray,
