@@ -19,6 +19,7 @@ import com.lazackna.hueapp.Light.ColorLightActivity;
 import com.lazackna.hueapp.Light.DimmableLight;
 import com.lazackna.hueapp.Light.DimmableLightActivity;
 import com.lazackna.hueapp.Light.Light;
+import com.lazackna.hueapp.Util.ColorHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GetLights();
+    }
+
     private void GetLights() {
         final JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET, // Use HTTP GET to retrieve the data from the NASA API
@@ -68,11 +75,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                     @Override
                     // The callback for handling the response
                     public void onResponse(JSONObject response) {
-                        //Log.d(LOGTAG, "Volley response: " + response.toString());
+                        lightList.clear();
                         try {
                             for(int i = 1; i <= response.length(); i++) {
                                 JSONObject root = response.getJSONObject(i + "");
                                 String type = root.getString("type");
+                                String modelid = root.getString("modelid");
                                 Light light = null;
                                 JSONObject j = root.getJSONObject("state");
                                 Light.PowerState powerState = Light.PowerState.OFF;
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                     case "Extended color light":
                                         //JSONObject j = root.getJSONObject("state");
                                         JSONArray array = j.getJSONArray("xy");
-
+                                        float[] xy = new float[] {(float)array.getDouble(0), (float)array.getDouble(1)};
                                         if (j.getBoolean("on")) powerState = Light.PowerState.ON;
                                         light = new ColorLight(
                                                 i,
@@ -93,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                                 j.getInt("bri"),
                                                 j.getInt("hue"),
                                                 j.getInt("sat"),
-                                                new double[] { array.getDouble(0), array.getDouble(1) });
+                                                xy,
+                                                modelid);
                                         break;
                                     case "Dimmable light":
                                         light = new DimmableLight(
@@ -101,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                                 uniqueid,
                                                 name,
                                                 j.getInt("bri"),
-                                                powerState);
+                                                powerState,
+                                                modelid);
                                         break;
                                 }
 
@@ -122,7 +132,11 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                     // The callback for handling a transmission error
                     public void onErrorResponse(VolleyError error) {
                         // Handle the error
-                        Log.e("haha", error.getLocalizedMessage());
+                        try {
+                            Log.e("haha", error.getLocalizedMessage());
+                        } catch (Exception e) {
+                            Log.e("fuck", "no work");
+                        }
                         finish();
                         //listener.onPhotoError(new Error(error.getLocalizedMessage()));
                     }

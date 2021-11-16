@@ -1,5 +1,7 @@
 package com.lazackna.hueapp;
 
+import com.lazackna.hueapp.Util.ColorHelper;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
