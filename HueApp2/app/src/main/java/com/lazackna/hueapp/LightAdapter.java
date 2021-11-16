@@ -1,7 +1,6 @@
 package com.lazackna.hueapp;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lazackna.hueapp.Light.ColorLight;
 import com.lazackna.hueapp.Light.Light;
+import com.lazackna.hueapp.Util.ColorHelper;
 
 import java.util.List;
 
@@ -51,11 +51,11 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.LightViewHol
         Light light = this.photoList.get(position);
         holder.name.setText(light.name);
         if (light instanceof ColorLight) {
-            light = (ColorLight) light;
-            int color = ColorHelper.xyToColor(((ColorLight) light).xy[0], ((ColorLight) light).xy[1], ((ColorLight) light).bri);
+            ColorLight colorLight = (ColorLight) light;
+            holder.lightColorView.setBackgroundColor(ColorHelper.hueToColor(colorLight.hue, colorLight.sat, colorLight.bri));
             //float[] hsv = new float[]{((ColorLight) light).hue, ((ColorLight) light).sat, ((ColorLight) light).bri};
             //int color = Color.HSVToColor(hsv);
-            holder.lightColorView.setBackgroundColor(color);
+            //holder.lightColorView.setBackgroundColor(color);
 
         }
         //int color = R.color.purple_200;

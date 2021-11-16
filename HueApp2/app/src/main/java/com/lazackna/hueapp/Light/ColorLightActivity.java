@@ -1,6 +1,5 @@
 package com.lazackna.hueapp.Light;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.lazackna.hueapp.ColorHelper;
+import com.lazackna.hueapp.Util.ColorHelper;
 import com.lazackna.hueapp.CustomJsonArrayRequest;
 import com.lazackna.hueapp.R;
 
