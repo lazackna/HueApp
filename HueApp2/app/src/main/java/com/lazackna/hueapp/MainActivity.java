@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                     // The callback for handling a transmission error
                     public void onErrorResponse(VolleyError error) {
                         // Handle the error
-                        Log.e("haha", error.getLocalizedMessage());
+                        //Log.e("haha", error.getLocalizedMessage());
                         finish();
                         //listener.onPhotoError(new Error(error.getLocalizedMessage()));
                     }

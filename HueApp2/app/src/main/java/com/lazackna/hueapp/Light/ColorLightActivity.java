@@ -64,7 +64,7 @@ public class ColorLightActivity extends AppCompatActivity {
         hue.setProgress(light.hue);
         saturation.setProgress(light.sat);
         brightness.setProgress(light.bri);
-        colorView.setBackgroundColor(ColorHelper.xyToColor(light.xy[0], light.xy[1], light.bri));
+        colorView.setBackgroundColor(ColorHelper.hueToColor(light.hue, light.sat, light.bri));
     }
 
     private void sendToHueBridge() {

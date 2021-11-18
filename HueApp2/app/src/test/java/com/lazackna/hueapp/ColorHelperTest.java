@@ -18,4 +18,5 @@ public class ColorHelperTest {
         int[] expected = new int[] {255,160,122};
         assertArrayEquals(rgb, expected);
     }
+
 }
