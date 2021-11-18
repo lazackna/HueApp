@@ -59,6 +59,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GetLights();
+    }
+
     private void GetLights() {
         final JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET, // Use HTTP GET to retrieve the data from the NASA API
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                     // The callback for handling the response
                     public void onResponse(JSONObject response) {
                         //Log.d(LOGTAG, "Volley response: " + response.toString());
+                        lightList.clear();
                         try {
                             for(int i = 1; i <= response.length(); i++) {
                                 JSONObject root = response.getJSONObject(i + "");
