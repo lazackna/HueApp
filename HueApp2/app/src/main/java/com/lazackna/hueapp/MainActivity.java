@@ -3,6 +3,7 @@ package com.lazackna.hueapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
     private RecyclerView recyclerView;
     private RequestQueue requestQueue;
 
+    private SwipeRefreshLayout pullToRefresh;
+
     private String key;
     private String ip;
     private String port;
@@ -49,6 +52,15 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         lightAdapter = new LightAdapter(this, this.lightList, this);
         recyclerView.setAdapter(lightAdapter);
+
+        pullToRefresh = findViewById(R.id.main_refresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                GetLights();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
