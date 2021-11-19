@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HueApp</string>
+    <string name="user_key_label">Gebruiker key</string>
+    <string name="ip_label">IP adres</string>
+    <string name="port_label">Poort nr.</string>
+    <string name="light_label">Licht nr.</string>
+    <string name="send_button">Verzend naar HUE bridge</string>
+    <string name="name">Naam:</string>
+    <string name="on">Aan/Uit</string>
+</resources>

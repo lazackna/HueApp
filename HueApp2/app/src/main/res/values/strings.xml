@@ -4,13 +4,13 @@
     <string name="ip_label">IP Address</string>
     <string name="port_label">Port Nr</string>
     <string name="light_label">Light Nr</string>
-    <string name="hue_label">Hue</string>
-    <string name="sat_label">Saturation</string>
-    <string name="bri_label">Brightness</string>
+    <string name="hue_label" translatable="false">Hue</string>
+    <string name="sat_label" translatable="false">Saturation</string>
+    <string name="bri_label" translatable="false">Brightness</string>
     <string name="send_button">Send to HUE bridge</string>
-    <string name="result_string"><![CDATA[<Result string>]]></string>
-    <string name="login_button">Login</string>
+    <string name="result_string" translatable="false"><![CDATA[<Result string>]]></string>
+    <string name="login_button" translatable="false">Login</string>
     <string name="name">Name:</string>
     <string name="on">Power:</string>
-    <string name="login_button_auto">Auto Login</string>
+    <string name="login_button_auto" translatable="false">Auto Login</string>
 </resources>
