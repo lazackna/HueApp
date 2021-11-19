@@ -12,4 +12,5 @@
     <string name="login_button">Login</string>
     <string name="name">Name:</string>
     <string name="on">Power:</string>
+    <string name="login_button_auto">Auto Login</string>
 </resources>

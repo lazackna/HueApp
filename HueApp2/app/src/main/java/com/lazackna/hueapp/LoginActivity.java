@@ -34,12 +34,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText ipText;
     private EditText portText;
     private Button loginButton;
+    private Button loginAutoButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         nameText = findViewById(R.id.login_name);
         loginButton = findViewById(R.id.loginButton);
+        loginAutoButton = findViewById(R.id.loginAuto);
         ipText = findViewById(R.id.login_hostIP);
         portText = findViewById(R.id.login_port);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -54,17 +56,23 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-        SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE);
-        String name = (sharedPreferences.getString(Settings.SELECTEDUSER, ""));
-        String ip = (sharedPreferences.getString(Settings.SELECTEDIP, ""));
-        String key = sharedPreferences.getString(Settings.SELECTEDBRIDGE, "");
+        loginAutoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE);
+                String name = (sharedPreferences.getString(Settings.SELECTEDUSER, ""));
+                String ip = (sharedPreferences.getString(Settings.SELECTEDIP, ""));
+                String key = sharedPreferences.getString(Settings.SELECTEDBRIDGE, "");
 
-        if (infoValid(name,portText.getText().toString(), ip) && key != null && !key.equals("")) {
-            nameText.setText(name);
-            ipText.setText(ip);
+                if (infoValid(name,portText.getText().toString(), ip) && key != null && !key.equals("")) {
+                    nameText.setText(name);
+                    ipText.setText(ip);
 
-            openMainActivity(key);
-        }
+                    openMainActivity(key);
+                }
+            }
+        });
+
 
 
     }
