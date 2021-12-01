@@ -144,8 +144,12 @@ public class LoginActivity extends AppCompatActivity {
         return body;
     }
 
-    private boolean infoValid(String name, String port, String ip) {
-        return name != null && !name.equals("") && port != null && !port.equals("") && ip != null && !ip.equals("");
+    public boolean infoValid(String name, String port, String ip) {
+        String portRegex = "^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
+        String ipRegex = "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$";
+        return name != null && !name.equals("")
+                && port != null && !port.equals("") && port.matches(portRegex)
+                && ip != null && !ip.equals("") && ip.matches(ipRegex);
     }
 
 

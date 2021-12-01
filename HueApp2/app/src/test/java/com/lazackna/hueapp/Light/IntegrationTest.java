@@ -13,6 +13,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.lazackna.hueapp.MainActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +22,6 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.TimeoutException;
 //@RunWith(AndroidJUnit4::class)
 public class IntegrationTest {
-
-    @Rule
-    public final ServiceTestRule serviceRule = new ServiceTestRule();
-
 
 //    @Test
 //    public void testWithGoodWeather() throws TimeoutException {
@@ -41,8 +39,5 @@ public class IntegrationTest {
 //        LocalService
 //    }
 
-    @Test
-    public void testWithGoodWeather() {
 
-    }
 }
