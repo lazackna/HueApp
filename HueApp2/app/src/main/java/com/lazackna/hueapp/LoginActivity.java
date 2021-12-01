@@ -60,15 +60,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE);
-                String name = (sharedPreferences.getString(Settings.SELECTEDUSER, ""));
-                String ip = (sharedPreferences.getString(Settings.SELECTEDIP, ""));
+                String name = sharedPreferences.getString(Settings.SELECTEDUSER, "");
+                String ip = sharedPreferences.getString(Settings.SELECTEDIP, "");
                 String key = sharedPreferences.getString(Settings.SELECTEDBRIDGE, "");
-
-                if (infoValid(name,portText.getText().toString(), ip) && key != null && !key.equals("")) {
+                String port = sharedPreferences.getString(Settings.SELECTEDPORT, "8000");
+                if (infoValid(name, port, ip) && key != null && !key.equals("")) {
                     nameText.setText(name);
                     ipText.setText(ip);
 
-                    openMainActivity(key);
+                    openMainActivity(key, ip, port);
                 }
             }
         });
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject root = response.getJSONObject(0);
                             JSONObject succes = root.getJSONObject("success");
                             String key = succes.getString("username");
-                            openMainActivity(key);
+                            openMainActivity(key, ipText.getText().toString(), portText.getText().toString());
                         } catch (JSONException exception) {
                             exception.printStackTrace();
                         }
@@ -109,17 +109,18 @@ public class LoginActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, MainActivity.class);
     }
 
-    private void openMainActivity(String key) {
+    private void openMainActivity(String key, String ip, String port) {
         //Log.d(TAG, Light.hueToHex(0.346, 0.3568, 254));
         SharedPreferences.Editor editor = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE).edit();
         editor.putString(Settings.SELECTEDBRIDGE, key);
         editor.putString(Settings.SELECTEDUSER, nameText.getText().toString());
         editor.putString(Settings.SELECTEDIP, ipText.getText().toString());
+        editor.putString(Settings.SELECTEDPORT, portText.getText().toString());
         editor.apply();
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("login_key", key);
-        intent.putExtra("login_ip", ipText.getText().toString());
-        intent.putExtra("login_port", portText.getText().toString());
+        intent.putExtra("login_ip", ip);
+        intent.putExtra("login_port", port);
         startActivity(intent);
     }
 

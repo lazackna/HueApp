@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class ColorLightActivity extends AppCompatActivity {
     private TextView stateView;
     private View colorView;
     private TextView nameView;
+    private Switch powerSwitch;
 
     private RequestQueue requestQueue;
     private ColorLight light;
@@ -55,6 +57,7 @@ public class ColorLightActivity extends AppCompatActivity {
         hue = (SeekBar) findViewById(R.id.hue);
         saturation = (SeekBar) findViewById(R.id.saturation);
         brightness = (SeekBar) findViewById(R.id.color_brightness);
+        powerSwitch = findViewById(R.id.color_powerSwitch);
         sendButton = (Button) findViewById(R.id.colorSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -102,7 +105,12 @@ public class ColorLightActivity extends AppCompatActivity {
                             float bri = Float.parseFloat(r.getString("bri"));
                             colorView.setBackgroundColor(ColorHelper.hueToColor(hue,sat,bri));
 
-                            Light.PowerState state = Light.PowerState.valueOf(r.getString("on"));
+                            Light.PowerState state = Light.PowerState.OFF;
+                            if (r.getString("on").equals("true")) {
+                                state = Light.PowerState.ON;
+                            } else if (r.getString("on").equals("false")) {
+                                state = Light.PowerState.OFF;
+                            }
                             if (state == Light.PowerState.OFF) {
                                 stateView.setText(getString(R.string.on) + " OFF");
                             } else if (state == Light.PowerState.ON) {
@@ -192,7 +200,7 @@ public class ColorLightActivity extends AppCompatActivity {
     private JSONObject buildBody() {
         JSONObject body = new JSONObject();
         try {
-            body.put("on", true);
+            body.put("on", powerSwitch.isChecked());
             body.put("hue", hue.getProgress());
             body.put("sat", saturation.getProgress());
             body.put("bri", brightness.getProgress());

@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         if (manager.findFragmentByTag("list") != null) {
             manager.beginTransaction().remove(manager.findFragmentByTag("list"));
         }
+
         GetLights();
     }
 
