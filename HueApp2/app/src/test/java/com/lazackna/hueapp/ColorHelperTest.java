@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
+/*
 public class ColorHelperTest {
     @Test
     public void xyToRGB_Correct() {
@@ -20,3 +22,4 @@ public class ColorHelperTest {
     }
 
 }
+*/
