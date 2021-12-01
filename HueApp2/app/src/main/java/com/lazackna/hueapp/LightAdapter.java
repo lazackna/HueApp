@@ -31,8 +31,8 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.LightViewHol
         void onItemClick(int clickedPosition);
     }
 
-    public LightAdapter(Context context, List<Light> photos, OnItemClickListener listener) {
-        appContext = context;
+    public LightAdapter(List<Light> photos, OnItemClickListener listener) {
+        //appContext = context;
         photoList = photos;
         clickListener = listener;
     }

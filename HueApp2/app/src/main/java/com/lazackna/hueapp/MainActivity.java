@@ -1,6 +1,9 @@
 package com.lazackna.hueapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,13 +29,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LightAdapter.OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements LightAdapter.OnItemClickListener, LightListFragment.OnFragmentInteractionListener{
     private static final String TAG = MainActivity.class.getName();
 
     private ArrayList<Light> lightList;
     private LightAdapter lightAdapter;
     private RecyclerView recyclerView;
     private RequestQueue requestQueue;
+
+    private FragmentContainerView fragmentContainer;
+    private FragmentManager manager;
 
     private SwipeRefreshLayout pullToRefresh;
 
@@ -45,14 +51,14 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
-
+        fragmentContainer = findViewById(R.id.fragmentContainer);
         lightList = new ArrayList<>();
-        recyclerView = findViewById(R.id.main_recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        lightAdapter = new LightAdapter(this, this.lightList, this);
-        recyclerView.setAdapter(lightAdapter);
-
+        //recyclerView = findViewById(R.id.main_recyclerView);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       // lightAdapter = new LightAdapter(this.lightList, this);
+        //recyclerView.setAdapter(lightAdapter);
+        manager = getSupportFragmentManager();
         pullToRefresh = findViewById(R.id.main_refresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -61,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                 pullToRefresh.setRefreshing(false);
             }
         });
+
+
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -74,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
     @Override
     protected void onResume() {
         super.onResume();
+        if (manager.findFragmentByTag("list") != null) {
+            manager.beginTransaction().remove(manager.findFragmentByTag("list"));
+        }
         GetLights();
     }
 
@@ -133,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                 lightList.add(light);
                             }
 
-                            lightAdapter.notifyDataSetChanged();
-
+                            //lightAdapter.notifyDataSetChanged();
+                            makeFragment();
                         } catch (Exception exception) {
                             // Make sure to handle any errors, at least provide a log entry
                             Log.d("haha", "test");
@@ -155,6 +166,19 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         requestQueue.add(request);
     }
 
+    private void makeFragment() {
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("lights", lightList);
+
+        this.manager.beginTransaction()
+                .setReorderingAllowed(false)
+                .add(R.id.fragmentContainer, LightListFragment.class, bundle, "list")
+                .commit();
+
+        //manager.beginTransaction().remove(manager.findFragmentByTag("list"));
+    }
+
     private String buildLightsUrl() {
         return "http://" + ip + ":" + port + "/api/" + key + "/lights";
     }
@@ -163,6 +187,24 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
     public void onItemClick(int clickedPosition) {
         Log.d(TAG, "clicked item");
         Light light = lightList.get(clickedPosition);
+        Intent intent = null;
+        if (light instanceof ColorLight) {
+            intent = new Intent(this, ColorLightActivity.class);
+            intent.putExtra("light", (ColorLight)light);
+        } else if (light instanceof DimmableLight) {
+            intent = new Intent(this, DimmableLightActivity.class);
+            intent.putExtra("light", (DimmableLight)light);
+        }
+        if (intent != null) {
+            intent.putExtra("login_key", key);
+            intent.putExtra("login_ip", ip);
+            intent.putExtra("login_port", port);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Light light) {
         Intent intent = null;
         if (light instanceof ColorLight) {
             intent = new Intent(this, ColorLightActivity.class);
