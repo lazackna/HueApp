@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.Loader;
@@ -30,11 +31,14 @@ public class ColorLightActivity extends AppCompatActivity {
     protected SeekBar saturation;
     protected SeekBar brightness;
     protected Button sendButton;
-
+    private TextView stateView;
     private View colorView;
+    private TextView nameView;
 
     private RequestQueue requestQueue;
     private ColorLight light;
+    private Light.PowerState state;
+    private String name;
     private String ip;
     private String port;
     private String key;
@@ -45,10 +49,12 @@ public class ColorLightActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        colorView = findViewById(R.id.color_color);
+        nameView = findViewById(R.id.color_name);
+        stateView = findViewById(R.id.color_on);
         hue = (SeekBar) findViewById(R.id.hue);
         saturation = (SeekBar) findViewById(R.id.saturation);
         brightness = (SeekBar) findViewById(R.id.color_brightness);
-        colorView = findViewById(R.id.color_color);
         sendButton = (Button) findViewById(R.id.colorSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -62,6 +68,16 @@ public class ColorLightActivity extends AppCompatActivity {
         ip = (String) bundle.get("login_ip");
         port = (String) bundle.get("login_port");
         light = (ColorLight) bundle.get("light");
+        name = light.name;
+        nameView.setText(getString(R.string.name) + " " + name);
+
+        state = light.powerState;
+        if (state == Light.PowerState.OFF) {
+            stateView.setText(getString(R.string.on) + " OFF");
+        } else if (state == Light.PowerState.ON) {
+            stateView.setText(getString(R.string.on) + " ON");
+        }
+
 
         hue.setProgress(light.hue);
         saturation.setProgress(light.sat);
@@ -85,6 +101,13 @@ public class ColorLightActivity extends AppCompatActivity {
                             float sat = Float.parseFloat(r.getString("sat"));
                             float bri = Float.parseFloat(r.getString("bri"));
                             colorView.setBackgroundColor(ColorHelper.hueToColor(hue,sat,bri));
+
+                            Light.PowerState state = Light.PowerState.valueOf(r.getString("on"));
+                            if (state == Light.PowerState.OFF) {
+                                stateView.setText(getString(R.string.on) + " OFF");
+                            } else if (state == Light.PowerState.ON) {
+                                stateView.setText(getString(R.string.on) + " ON");
+                            }
 
                         } catch (Exception exception) {
                             // Make sure to handle any errors, at least provide a log entry

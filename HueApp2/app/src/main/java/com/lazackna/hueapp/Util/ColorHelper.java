@@ -11,4 +11,8 @@ public class ColorHelper {
         //(360 / hue.maxvalue) * hue
     }
 
+    public static int briToColor(float bri) {
+        return Color.rgb((1f / 254f) * bri, (1f / 254f) * bri, (1f / 254f) * bri);
+    }
+
 }

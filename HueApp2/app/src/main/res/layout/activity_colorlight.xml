@@ -99,7 +99,10 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:max="254"/>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
             <Button
                 android:id="@+id/colorSendButton"
                 style="@android:style/Widget.Button"
@@ -110,6 +113,18 @@
                 android:text="@string/send_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/color_brightness" />
+
+            <Button
+                android:id="@+id/color_powerButton"
+                style="@android:style/Widget.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/power_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/color_brightness" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

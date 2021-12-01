@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lazackna.hueapp.Light.ColorLight;
+import com.lazackna.hueapp.Light.DimmableLight;
+import com.lazackna.hueapp.Light.DimmableLightActivity;
 import com.lazackna.hueapp.Light.Light;
 import com.lazackna.hueapp.Util.ColorHelper;
 
@@ -57,6 +59,9 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.LightViewHol
             //int color = Color.HSVToColor(hsv);
             //holder.lightColorView.setBackgroundColor(color);
 
+        } else if (light instanceof DimmableLight) {
+            DimmableLight dimmableLight = (DimmableLight) light;
+            holder.lightColorView.setBackgroundColor(ColorHelper.briToColor(dimmableLight.bri));
         }
         //int color = R.color.purple_200;
 

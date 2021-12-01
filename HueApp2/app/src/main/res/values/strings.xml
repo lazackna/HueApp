@@ -13,4 +13,5 @@
     <string name="name">Name:</string>
     <string name="on">Power:</string>
     <string name="login_button_auto" translatable="false">Auto Login</string>
+    <string name="power_button">Turn on\\off</string>
 </resources>
