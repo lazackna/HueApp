@@ -23,16 +23,16 @@ public class ColorLightTest {
 
     @Test
     public void brightnessBelowMax() {
-        int expectedBrightness = 100;
-        int realBrightness = 101;
+        int expectedBrightness = 254;
+        int realBrightness = 260;
         ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, realBrightness, 1, 1, new double[]{2.0, 5.0});
         assertEquals(expectedBrightness, colorLight.getBri());
     }
 
     @Test
     public void hueGetterTest() {
-        int expectedHue = 255;
-        ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, 1, 1, new double[]{2.0, 5.0});
+        int expectedHue = 254;
+        ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, expectedHue, 1, new double[]{2.0, 5.0});
         assertEquals(expectedHue, colorLight.getHue());
     }
 
@@ -46,16 +46,8 @@ public class ColorLightTest {
 
     @Test
     public void hueBelowMax() {
-        int expectedHue = 240;
-        int realHue = 0;
-        ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, realHue, 1, new double[]{2.0, 5.0});
-        assertEquals(expectedHue, colorLight.getHue());
-    }
-
-    @Test
-    public void hueCorrectCircle() {
-        int expectedHue = 260;
-        int realHue = 20;
+        int expectedHue = 65535;
+        int realHue = 65540;
         ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, realHue, 1, new double[]{2.0, 5.0});
         assertEquals(expectedHue, colorLight.getHue());
     }
@@ -77,7 +69,7 @@ public class ColorLightTest {
 
     @Test
     public void satBelowMax() {
-        int expectedSat = 255;
+        int expectedSat = 254;
         int realSat = 256;
         ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, 1, realSat, new double[]{2.0, 5.0});
         assertEquals(expectedSat, colorLight.getSat());
@@ -85,8 +77,10 @@ public class ColorLightTest {
 
     @Test
     public void xyGetterTest() {
-        double[] expectedXY = new double[]{2.0, 5.0};
+        double[] expectedXY = new double[]{1.0, 1.0};
         ColorLight colorLight = new ColorLight(1, "uniqueId1", "name", Light.PowerState.OFF, 1, 1, 1, new double[]{2.0, 5.0});
-        assertEquals(expectedXY, colorLight.getXy());
+       // assertEquals(expectedXY, colorLight.getXy());
+        assertEquals(expectedXY[0], colorLight.getXy()[0], 0);
+        assertEquals(expectedXY[1], colorLight.getXy()[1], 0);
     }
 }

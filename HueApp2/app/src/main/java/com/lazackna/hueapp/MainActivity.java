@@ -94,7 +94,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                 String type = root.getString("type");
                                 Light light = null;
                                 JSONObject j = root.getJSONObject("state");
-                                Light.PowerState powerState = Light.PowerState.OFF;
+                                Light.PowerState state = Light.PowerState.OFF;
+                                if (j.getString("on").equals("true")) {
+                                    state = Light.PowerState.ON;
+                                } else if (j.getString("on").equals("false")) {
+                                    state = Light.PowerState.OFF;
+                                }
                                 String uniqueid = root.getString("uniqueid");
 
                                 String name = root.getString("name");
@@ -103,12 +108,12 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                         //JSONObject j = root.getJSONObject("state");
                                         JSONArray array = j.getJSONArray("xy");
 
-                                        if (j.getBoolean("on")) powerState = Light.PowerState.ON;
+                                        if (j.getBoolean("on")) state = Light.PowerState.ON;
                                         light = new ColorLight(
                                                 i,
                                                 uniqueid,
                                                 name,
-                                                powerState,
+                                                state,
                                                 j.getInt("bri"),
                                                 j.getInt("hue"),
                                                 j.getInt("sat"),
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                                 uniqueid,
                                                 name,
                                                 j.getInt("bri"),
-                                                powerState);
+                                                state);
                                         break;
                                 }
 

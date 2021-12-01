@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ public class DimmableLightActivity extends AppCompatActivity {
     private View view;
     private TextView stateView;
     private TextView nameView;
+    private Switch powerSwitch;
 
     private RequestQueue requestQueue;
     private DimmableLight light;
@@ -48,6 +50,7 @@ public class DimmableLightActivity extends AppCompatActivity {
         nameView = findViewById(R.id.dimmable_name);
         requestQueue = Volley.newRequestQueue(this);
         brightness = (SeekBar) findViewById(R.id.dimmablebri);
+        powerSwitch = findViewById(R.id.dimmable_powerSwitch);
         sendButton = (Button) findViewById(R.id.dimmableSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -68,8 +71,10 @@ public class DimmableLightActivity extends AppCompatActivity {
         state = light.powerState;
         if (state == Light.PowerState.OFF) {
             stateView.setText(getString(R.string.on) + " OFF");
+            powerSwitch.setChecked(false);
         } else if (state == Light.PowerState.ON) {
             stateView.setText(getString(R.string.on) + " ON");
+            powerSwitch.setChecked(true);
         }
 
         view.setBackgroundColor(ColorHelper.briToColor(light.bri));
@@ -89,7 +94,12 @@ public class DimmableLightActivity extends AppCompatActivity {
                         try {
                             JSONObject r = response.getJSONObject("state");
                             float bri = Float.parseFloat(r.getString("bri"));
-                            Light.PowerState state = Light.PowerState.valueOf(r.getString("on"));
+                            state = Light.PowerState.OFF;
+                            if (r.getString("on").equals("true")) {
+                                state = Light.PowerState.ON;
+                            } else if (r.getString("on").equals("false")) {
+                                state = Light.PowerState.OFF;
+                            }
                             if (state == Light.PowerState.OFF) {
                                 stateView.setText(getString(R.string.on) + " OFF");
                             } else if (state == Light.PowerState.ON) {
@@ -149,35 +159,6 @@ public class DimmableLightActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    private void powerToBridge() {
-        CustomJsonArrayRequest request = new CustomJsonArrayRequest(
-                Request.Method.PUT,
-                buildUrl(),
-                buildBody(),
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.i(TAG, "Response=" + response.toString());
-                        try {
-                            //resultView.setText(response.toString(4));
-                            String temp = response.toString(4);
-                            updateLight();
-                        } catch (JSONException exception) {
-                            exception.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error=" + error.getMessage());
-                        //resultView.setText(error.getMessage());
-                    }
-                }
-        );
-        Log.i(TAG, "Sending request");
-        requestQueue.add(request);
-    }
 
     private String buildLightUrl() {
         String host = String.valueOf(ip);
@@ -210,7 +191,7 @@ public class DimmableLightActivity extends AppCompatActivity {
     private JSONObject buildBody() {
         JSONObject body = new JSONObject();
         try {
-            body.put("on", true);
+            body.put("on", powerSwitch.isChecked());
             body.put("bri", brightness.getProgress());
         }
         catch (JSONException exception) {
