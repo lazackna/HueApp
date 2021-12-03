@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         this.manager.beginTransaction()
                 .setReorderingAllowed(false)
                 .replace(R.id.fragmentContainer, LightListFragment.class, bundle, "list")
-                .addToBackStack("list")
+                //.addToBackStack("list")
                 .commit();
 
         //manager.beginTransaction().remove(manager.findFragmentByTag("list"));
@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
         if (manager.getBackStackEntryCount() > 0) {
             Log.i("MainActivity", "popping backstack");
             manager.popBackStack();
+            GetLights();
+
         } else {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
