@@ -40,6 +40,7 @@ public class ExampleInstrumentedTest{
 
             assertTrue(result);
         });
+
     }
 
     @Test

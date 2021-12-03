@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                 String name = sharedPreferences.getString(Settings.SELECTEDUSER, "");
                 String ip = sharedPreferences.getString(Settings.SELECTEDIP, "");
                 String key = sharedPreferences.getString(Settings.SELECTEDBRIDGE, "");
-                String port = sharedPreferences.getString(Settings.SELECTEDPORT, "8000");
+                String port = sharedPreferences.getString(Settings.SELECTEDPORT, "80");
                 if (infoValid(name, port, ip) && key != null && !key.equals("")) {
                     nameText.setText(name);
                     ipText.setText(ip);
@@ -73,8 +73,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
+        SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCES, MODE_PRIVATE);
+        String port = sharedPreferences.getString(Settings.SELECTEDPORT, "80");
+        portText.setText(port);
     }
     private RequestQueue requestQueue;
     private void login() {

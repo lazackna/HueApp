@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -18,6 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.lazackna.hueapp.Detail.ColorFragment;
+import com.lazackna.hueapp.Detail.DimmableFragment;
 import com.lazackna.hueapp.Light.ColorLight;
 import com.lazackna.hueapp.Light.ColorLightActivity;
 import com.lazackna.hueapp.Light.DimmableLight;
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
        // lightAdapter = new LightAdapter(this.lightList, this);
         //recyclerView.setAdapter(lightAdapter);
         manager = getSupportFragmentManager();
+
+
         pullToRefresh = findViewById(R.id.main_refresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
                                         //JSONObject j = root.getJSONObject("state");
                                         JSONArray array = j.getJSONArray("xy");
 
-                                        if (j.getBoolean("on")) state = Light.PowerState.ON;
+                                        //if (j.getBoolean("on")) state = Light.PowerState.ON;
                                         light = new ColorLight(
                                                 i,
                                                 uniqueid,
@@ -174,7 +179,8 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
         this.manager.beginTransaction()
                 .setReorderingAllowed(false)
-                .add(R.id.fragmentContainer, LightListFragment.class, bundle, "list")
+                .replace(R.id.fragmentContainer, LightListFragment.class, bundle, "list")
+                .addToBackStack("list")
                 .commit();
 
         //manager.beginTransaction().remove(manager.findFragmentByTag("list"));
@@ -182,6 +188,18 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
     private String buildLightsUrl() {
         return "http://" + ip + ":" + port + "/api/" + key + "/lights";
+    }
+
+    @Override
+    public void onBackPressed(){
+
+        if (manager.getBackStackEntryCount() > 0) {
+            Log.i("MainActivity", "popping backstack");
+            manager.popBackStack();
+        } else {
+            Log.i("MainActivity", "nothing on backstack, calling super");
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -206,20 +224,79 @@ public class MainActivity extends AppCompatActivity implements LightAdapter.OnIt
 
     @Override
     public void onFragmentInteraction(Light light) {
-        Intent intent = null;
-        if (light instanceof ColorLight) {
-            intent = new Intent(this, ColorLightActivity.class);
-            intent.putExtra("light", (ColorLight)light);
-        } else if (light instanceof DimmableLight) {
-            intent = new Intent(this, DimmableLightActivity.class);
-            intent.putExtra("light", (DimmableLight)light);
+//        Intent intent = null;
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            Bundle bundle = new Bundle();
+            if (light instanceof ColorLight) {
+    //            intent = new Intent(this, ColorLightActivity.class);
+    //            intent.putExtra("light", (ColorLight)light);
+                bundle.putSerializable("light", (ColorLight)light);
+                bundle.putString("login_key", key);
+                bundle.putString("login_ip", ip);
+                bundle.putString("login_port", port);
+                this.manager.beginTransaction()
+                        .setReorderingAllowed(true)
+                        //.add(R.id.fragmentContainer, DimmableFragment.class, bundle, "light")
+                        .addToBackStack("light")
+                        .replace(R.id.fragmentContainer, ColorFragment.class, bundle, "light")
+                        .commit();
+            } else if (light instanceof DimmableLight) {
+    //            intent = new Intent(this, DimmableLightActivity.class);
+    //            intent.putExtra("light", (DimmableLight)light);
+                bundle.putSerializable("light", (DimmableLight)light);
+                bundle.putString("login_key", key);
+                bundle.putString("login_ip", ip);
+                bundle.putString("login_port", port);
+                this.manager.beginTransaction()
+                        .setReorderingAllowed(true)
+                        //.add(R.id.fragmentContainer, DimmableFragment.class, bundle, "light")
+                        .addToBackStack("light")
+                        .replace(R.id.fragmentContainer, DimmableFragment.class, bundle, "light")
+                        .commit();
+
+            }
+        } else {
+            Bundle bundle = new Bundle();
+            if (light instanceof ColorLight) {
+                //            intent = new Intent(this, ColorLightActivity.class);
+                //            intent.putExtra("light", (ColorLight)light);
+                bundle.putSerializable("light", (ColorLight)light);
+                bundle.putString("login_key", key);
+                bundle.putString("login_ip", ip);
+                bundle.putString("login_port", port);
+                this.manager.beginTransaction()
+                        .setReorderingAllowed(true)
+                        //.add(R.id.fragmentContainer, DimmableFragment.class, bundle, "light")
+                        //.addToBackStack("light")
+                        .replace(R.id.fragmentContainer_detail, ColorFragment.class, bundle, "light")
+                        .commit();
+            } else if (light instanceof DimmableLight) {
+                //            intent = new Intent(this, DimmableLightActivity.class);
+                //            intent.putExtra("light", (DimmableLight)light);
+                bundle.putSerializable("light", (DimmableLight)light);
+                bundle.putString("login_key", key);
+                bundle.putString("login_ip", ip);
+                bundle.putString("login_port", port);
+                this.manager.beginTransaction()
+                        .setReorderingAllowed(true)
+                        //.add(R.id.fragmentContainer, DimmableFragment.class, bundle, "light")
+                        //.addToBackStack("light")
+                        .replace(R.id.fragmentContainer_detail, DimmableFragment.class, bundle, "light")
+                        .commit();
+
+            }
         }
-        if (intent != null) {
-            intent.putExtra("login_key", key);
-            intent.putExtra("login_ip", ip);
-            intent.putExtra("login_port", port);
-            startActivity(intent);
-        }
+//        if (intent != null) {
+//            intent.putExtra("login_key", key);
+//            intent.putExtra("login_ip", ip);
+//            intent.putExtra("login_port", port);
+//            startActivity(intent);
+//        }
+
+
     }
 //    private void sendToHueBridge() {
 //        // Note that the HUE API expects a JSONObject but returns a JSONArray,
